@@ -62,11 +62,10 @@ class LangChainService:
         distance: 距离远近, 表现为相似度高低, 大于0.5极低 0.4-0.5低 0.3-0.4中 0.2-0.3高 0.1-0.2极高 0.0完全一致, 语言不同相似度会低一档
         '''
         content = ""
-        result = self.db.similarity_search_with_score(texts, k=1)
-        if result: 
-            distance = result[0][1]
-            content = result[0][0].page_content
-            if distance < maxDistance: content = ""
+        result = self.db.similarity_search_with_score(texts, k=3)
+        for item in result: 
+            distance = item[1]
+            if distance < maxDistance and len(content) < 1000 and item[0].page_content not in content: content += item[0].page_content + "\n"
         # retriever = self.db.as_retriever()
         # result = retriever.get_relevant_documents(texts)
         # content = result[0].page_content
