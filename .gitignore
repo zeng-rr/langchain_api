@@ -1,3 +1,4 @@
 /data
 .chroma
 config.py
+__pycache__
