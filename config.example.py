@@ -1,4 +1,4 @@
-
+data_directory_path: str = ".chroma"
 openai_key: str = ""
 debug: bool = True
 port: int = 8910

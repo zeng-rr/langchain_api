@@ -18,7 +18,7 @@ sys.path.append(os.getcwd())
 import config
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 os.environ["OPENAI_API_KEY"] = config.openai_key
-data_directory_path = os.getcwd() + '/.chroma'
+data_directory_path = config.data_directory_path
 
 class LangChainService:
 
@@ -66,6 +66,8 @@ class LangChainService:
         '''
         content = ""
         result = self.db.similarity_search_with_score(texts, k=3)
+        print(result)
+        sys.stdout.flush()
         for item in result: 
             distance = item[1]
             if distance < maxDistance and len(content) < 1000 and item[0].page_content not in content: content += item[0].page_content + "\n"
