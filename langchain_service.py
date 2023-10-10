@@ -5,12 +5,15 @@ from langchain.chat_models import ChatOpenAI
 # import gradio as gr
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Chroma
+import os, io, sys
+# 使用pysqlite替换系统sqlite包, 解决系统包版本过低问题
+__import__('pysqlite3')
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 import chromadb
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.llms import OpenAI
 from langchain.chains import RetrievalQA
 from langchain.document_loaders import TextLoader
-import os, io, sys
 sys.path.append(os.getcwd())
 import config
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
@@ -57,7 +60,7 @@ class LangChainService:
         self.db.delete_collection()
         self.db.persist()
 
-    def query(self, texts, usePrompt = False, maxDistance = 0.5):
+    def query(self, texts, maxDistance = 0.5):
         '''
         distance: 距离远近, 表现为相似度高低, 大于0.5极低 0.4-0.5低 0.3-0.4中 0.2-0.3高 0.1-0.2极高 0.0完全一致, 语言不同相似度会低一档
         '''
@@ -70,10 +73,7 @@ class LangChainService:
         # result = retriever.get_relevant_documents(texts)
         # content = result[0].page_content
         # print(result)
-        return self.prompt(texts, content) if usePrompt else content
-    
-    def prompt(self, question, answer):
-        return "You're a 007 customer service assistant. Answer questions based on the information provided, but do not answer questions that are not related to that content, use the same language as the question. We have provided context information below. \n---\n{}\n---\nPlease answer this question: {}\n".format(answer, question) if answer else "You're a 007 customer service assistant, now you don't know how to answer this question, Please reply using the same language as the question, the question is: {}".format(question)
+        return content
 
 if __name__ == "__main__":
     server = LangChainService('test')

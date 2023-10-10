@@ -36,7 +36,7 @@ def query():
     data = request.get_json()
     if 'text' not in data:
         return fail
-    response = app.service.query(data['text'], data['use_prompt'] if 'use_prompt' in data else False)
+    response = app.service.query(data['text'], data['max_distance'] if 'max_distance' in data else 0.5)
     success['data'] = response
     return success
 
